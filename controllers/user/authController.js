@@ -1,15 +1,16 @@
 const bcrypt = require("bcryptjs");
 
 const userModel = require("../../Models/User");
-
 const generateToken = require("../../Utils/generateToken");
 const sendResponse = require("../../Utils/sendResponse");
+
+
+// ================= REGISTER =================
 
 const registerUser = async (req, res) => {
   try {
     const { name, email, password, phone } = req.body;
-   console.log("requested :",req.body);
-   
+
     if (!name || !email || !password) {
       return sendResponse(
         res,
@@ -21,7 +22,7 @@ const registerUser = async (req, res) => {
 
     const existingUser = await userModel.findOne({ email });
 
-    if (!existingUser) {
+    if (existingUser) {
       return sendResponse(
         res,
         409,
@@ -38,18 +39,29 @@ const registerUser = async (req, res) => {
       password: hashedPassword,
       phone,
     });
- console.log("created useer:",user);
- 
-    const token = generateToken(user._id);
 
-    res.cookie("token", token, {
-      httpOnly: true,
-      secure: false,
-      sameSite: "lax",
-      maxAge: 7 * 24 * 60 * 60 * 1000,
-    });
+    // Correct order of arguments
+    const { AccessToken, RefreshToken } = generateToken(
+      user.email,
+      user._id,
+      user.role
+    );
 
-    sendResponse(
+    res
+      .cookie("AccessToken", AccessToken, {
+        httpOnly: true,
+        secure: false,
+        sameSite: "lax",
+        maxAge: 15 * 60 * 1000,
+      })
+      .cookie("RefreshToken", RefreshToken, {
+        httpOnly: true,
+        secure: false,
+        sameSite: "lax",
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+      });
+
+    return sendResponse(
       res,
       201,
       true,
@@ -61,12 +73,91 @@ const registerUser = async (req, res) => {
       }
     );
   } catch (error) {
-    sendResponse(res, 500, false, error.message);
-    console.log(error);
-    
+    return sendResponse(res, 500, false, error.message);
+  }
+};
+
+
+// ================= LOGIN =================
+
+const loginUser = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+      return sendResponse(
+        res,
+        400,
+        false,
+        "Email and password are required"
+      );
+    }
+
+    const user = await userModel
+      .findOne({ email })
+      .select("+password");
+
+    if (!user) {
+      return sendResponse(
+        res,
+        404,
+        false,
+        "User not found"
+      );
+    }
+
+    const isMatch = await bcrypt.compare(
+      password,
+      user.password
+    );
+
+    if (!isMatch) {
+      return sendResponse(
+        res,
+        401,
+        false,
+        "Invalid credentials"
+      );
+    }
+
+    // Correct order of arguments
+    const { AccessToken, RefreshToken } = generateToken(
+      user.email,
+      user._id,
+      user.role
+    );
+
+    res
+      .cookie("AccessToken", AccessToken, {
+        httpOnly: true,
+        secure: false,
+        sameSite: "lax",
+        maxAge: 15 * 60 * 1000,
+      })
+      .cookie("RefreshToken", RefreshToken, {
+        httpOnly: true,
+        secure: false,
+        sameSite: "lax",
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+      });
+
+    return sendResponse(
+      res,
+      200,
+      true,
+      "Login successful",
+      {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+      }
+    );
+  } catch (error) {
+    return sendResponse(res, 500, false, error.message);
   }
 };
 
 module.exports = {
   registerUser,
+  loginUser,
 };

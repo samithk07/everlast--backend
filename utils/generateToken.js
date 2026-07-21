@@ -1,13 +1,21 @@
-const jwt = require("jsonwebtoken");
+const jwt=require("jsonwebtoken");
+require("dotenv").config();
 
-const generateToken = (userId) => {
-  return jwt.sign(
-    { id: userId },
-    process.env.JWT_SECRET,
-    {
-      expiresIn: "7d",
-    }
-  );
-};
+const buildTokenPayload=(email,userID,role)=>({
+    Email:email,
+    Id:userID,
+    role,
+});
 
-module.exports = generateToken;
+const generateToken=(email,userId,role)=>{
+    const payload=buildTokenPayload(email,userId,role);
+
+    const AccessToken=jwt.sign(payload,process.env.ACCESS_TOKEN_KEY,{expiresIn:"15m"});
+    
+    const RefreshToken= jwt.sign(payload,process.env.REFRESH_TOKEN_KEY,{expiresIn:"7d"});
+
+    return {RefreshToken,AccessToken};
+
+}
+
+module.exports=generateToken;
