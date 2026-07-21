@@ -5,7 +5,7 @@ const protect = async (req, res, next) => {
   try {
     // Get Access Token from cookies
     const token = req.cookies.AccessToken;
-
+  // console.log("AccessToken:", token);
     if (!token) {
       return res.status(401).json({
         success: false,
