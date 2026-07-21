@@ -4,13 +4,13 @@ const productSchema = new mongoose.Schema(
   {
     name: {
       type: String,
-      required: [true, "Product name is required"],
+      required: true,
       trim: true,
     },
 
     description: {
       type: String,
-      required: [true, "Description is required"],
+      required: true,
     },
 
     category: {
@@ -20,7 +20,7 @@ const productSchema = new mongoose.Schema(
 
     brand: {
       type: String,
-      required: true,
+      default: "Everlast",
     },
 
     images: [
@@ -32,21 +32,27 @@ const productSchema = new mongoose.Schema(
     price: {
       type: Number,
       required: true,
-      min: 0,
     },
 
     stock: {
       type: Number,
       required: true,
       default: 0,
-      min: 0,
     },
 
     rating: {
       type: Number,
       default: 0,
-      min: 0,
-      max: 5,
+    },
+
+    reviews: {
+      type: Number,
+      default: 0,
+    },
+
+    isActive: {
+      type: Boolean,
+      default: true,
     },
   },
   {
@@ -54,5 +60,5 @@ const productSchema = new mongoose.Schema(
   }
 );
 
-const productModel=mongoose.model("Product", productSchema);
-module.exports = productModel
+module.exports =
+  mongoose.models.Product || mongoose.model("Product", productSchema);

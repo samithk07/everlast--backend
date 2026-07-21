@@ -6,11 +6,20 @@ const {
   createProduct,
   getAllProducts,
   getProductById,
-} = require("../controllers/productController");
+  getProductsByCategory,
+  searchProducts,
+} = require("../../controllers/user/productController");
 
 router
   .route("/")
   .get(getAllProducts)
   .post(createProduct);
+
+// Specific routes FIRST
+router.get("/search", searchProducts);
+router.get("/category/:category", getProductsByCategory);
+
+// Dynamic route LAST
 router.get("/:id", getProductById);
+
 module.exports = router;

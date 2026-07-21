@@ -1,12 +1,11 @@
 const express = require("express");
 require("dotenv").config();
 const connectDB = require("./config/db");
-const productRoutes = require("./routes/productRoutes");
+const productRoutes = require("./routes/user/productRoutes");
 const authRoutes = require("./Routes/user/authRoutes");
 const cookiesParser=require("cookie-parser")
 const userRoutes = require("./Routes/user/userRoutes");
-
-
+const cartRoutes = require("./Routes/user/cartRoutes");
 
 const app = express();
 
@@ -21,6 +20,9 @@ app.use("/api/products", productRoutes);
 app.use("/api/auth", authRoutes);
 
 app.use("/api/user", userRoutes);
+app.use("/api/cart", cartRoutes);
+
+
 
 
 const PORT = process.env.PORT || 5000;

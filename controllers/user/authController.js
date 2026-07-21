@@ -1,34 +1,22 @@
 const bcrypt = require("bcryptjs");
-
 const userModel = require("../../Models/User");
 const generateToken = require("../../Utils/generateToken");
 const sendResponse = require("../../Utils/sendResponse");
 
-
 // ================= REGISTER =================
 
-const registerUser = async (req, res) => {
+const register = async (req, res) => {
   try {
     const { name, email, password, phone } = req.body;
 
     if (!name || !email || !password) {
-      return sendResponse(
-        res,
-        400,
-        false,
-        "Please fill all required fields"
-      );
+      return sendResponse(res, 400, false, "Please fill all required fields");
     }
 
     const existingUser = await userModel.findOne({ email });
 
     if (existingUser) {
-      return sendResponse(
-        res,
-        409,
-        false,
-        "User already exists"
-      );
+      return sendResponse(res, 409, false, "User already exists");
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -40,7 +28,6 @@ const registerUser = async (req, res) => {
       phone,
     });
 
-    // Correct order of arguments
     const { AccessToken, RefreshToken } = generateToken(
       user.email,
       user._id,
@@ -61,66 +48,38 @@ const registerUser = async (req, res) => {
         maxAge: 7 * 24 * 60 * 60 * 1000,
       });
 
-    return sendResponse(
-      res,
-      201,
-      true,
-      "User registered successfully",
-      {
-        id: user._id,
-        name: user.name,
-        email: user.email,
-      }
-    );
+    return sendResponse(res, 201, true, "User registered successfully", {
+      id: user._id,
+      name: user.name,
+      email: user.email,
+    });
   } catch (error) {
     return sendResponse(res, 500, false, error.message);
   }
 };
 
-
 // ================= LOGIN =================
 
-const loginUser = async (req, res) => {
+const login = async (req, res) => {
   try {
     const { email, password } = req.body;
 
     if (!email || !password) {
-      return sendResponse(
-        res,
-        400,
-        false,
-        "Email and password are required"
-      );
+      return sendResponse(res, 400, false, "Email and password are required");
     }
 
-    const user = await userModel
-      .findOne({ email })
-      .select("+password");
+    const user = await userModel.findOne({ email }).select("+password");
 
     if (!user) {
-      return sendResponse(
-        res,
-        404,
-        false,
-        "User not found"
-      );
+      return sendResponse(res, 404, false, "User not found");
     }
 
-    const isMatch = await bcrypt.compare(
-      password,
-      user.password
-    );
+    const isMatch = await bcrypt.compare(password, user.password);
 
     if (!isMatch) {
-      return sendResponse(
-        res,
-        401,
-        false,
-        "Invalid credentials"
-      );
+      return sendResponse(res, 401, false, "Invalid credentials");
     }
 
-    // Correct order of arguments
     const { AccessToken, RefreshToken } = generateToken(
       user.email,
       user._id,
@@ -141,15 +100,31 @@ const loginUser = async (req, res) => {
         maxAge: 7 * 24 * 60 * 60 * 1000,
       });
 
+    return sendResponse(res, 200, true, "Login successful", {
+      id: user._id,
+      name: user.name,
+      email: user.email,
+    });
+  } catch (error) {
+    return sendResponse(res, 500, false, error.message);
+  }
+};
+
+// ================= PROFILE =================
+
+const getProfile = async (req, res) => {
+  try {
     return sendResponse(
       res,
       200,
       true,
-      "Login successful",
+      "Profile fetched successfully",
       {
-        id: user._id,
-        name: user.name,
-        email: user.email,
+        id: req.user._id,
+        name: req.user.name,
+        email: req.user.email,
+        phone: req.user.phone,
+        role: req.user.role,
       }
     );
   } catch (error) {
@@ -158,6 +133,7 @@ const loginUser = async (req, res) => {
 };
 
 module.exports = {
-  registerUser,
-  loginUser,
+  register,
+  login,
+  getProfile,
 };
