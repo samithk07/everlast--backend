@@ -7,7 +7,8 @@ const cookiesParser=require("cookie-parser")
 const userRoutes = require("./Routes/user/userRoutes");
 const cartRoutes = require("./Routes/user/cartRoutes");
 const orderRoutes = require("./Routes/user/orderRoutes");
-
+const paymentRoutes = require("./Routes/user/paymentRoutes");
+const cors=require("cors");
 
 const app = express();
 
@@ -22,7 +23,8 @@ app.use("/api/auth", authRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/cart", cartRoutes);
 app.use("/api/orders", orderRoutes);
-
+app.use("/api/payment", paymentRoutes);
+app.use(cors({origin:"http://localhost:5173/",credentials:true}))
 
 
 

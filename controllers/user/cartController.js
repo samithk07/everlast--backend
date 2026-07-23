@@ -5,6 +5,7 @@ const sendResponse = require("../../Utils/sendResponse");
 // ================= ADD TO CART =================
 
 const addToCart = async (req, res) => {
+
   try {
     const userId = req.user._id;
     const { productId, quantity = 1 } = req.body;
@@ -31,8 +32,9 @@ const addToCart = async (req, res) => {
           },
         ],
       });
-
+console.log("Cart Before Save:", cart)
       await cart.save();
+      console.log("Cart Saved");
 
       return sendResponse(res, 201, true, "Product added to cart", cart);
     }
