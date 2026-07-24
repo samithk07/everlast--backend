@@ -1,17 +1,21 @@
-const validate=(Schema)=>(req,res,next)=>{
-    const  isDone=Schema.safeParse(req.body);
 
-    if(!isDone.success){
-        console.log(isDone.error)
-
-        return res.status(400).json({
-            errors:isDone.error.errors
-        });
-    }
+const validatorMiddleware = (schema) => (req, res, next) => {
     
-    req.body=isDone.data;
-    next();
+    
+  const result = schema.safeParse(req.body);
+console.dir(result, { depth: null });
+   
+  if (!result.success) {
+    console.log(result.error.issues);
 
+    return res.status(400).json({
+      success: false,
+      errors: result.error.issues,
+    });
+  }
+
+  req.body = result.data;
+  next();
 };
 
-module.exports={validate}
+module.exports = validatorMiddleware;

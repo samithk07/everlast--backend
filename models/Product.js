@@ -8,12 +8,14 @@ const productSchema = new mongoose.Schema(
       trim: true,
     },
 
-    description: {
+    category: {
       type: String,
       required: true,
+      trim: true,
+      enum: ["ro", "uv", "uf", "gravity", "accessories"],
     },
 
-    category: {
+    description: {
       type: String,
       required: true,
     },
@@ -23,26 +25,42 @@ const productSchema = new mongoose.Schema(
       default: "Everlast",
     },
 
-    images: [
-      {
+    image: {
+      url: {
         type: String,
+        required: true,
       },
-    ],
+      public_id: {
+        type: String,
+        required: true,
+      },
+    },
 
     price: {
       type: Number,
       required: true,
     },
 
-    stock: {
+    originalPrice: {
       type: Number,
       required: true,
+    },
+
+    discount: {
+      type: Number,
+      default: 0,
+    },
+
+    stock: {
+      type: Number,
       default: 0,
     },
 
     rating: {
       type: Number,
       default: 0,
+      min: 0,
+      max: 5,
     },
 
     reviews: {
@@ -50,9 +68,21 @@ const productSchema = new mongoose.Schema(
       default: 0,
     },
 
-    isActive: {
-      type: Boolean,
-      default: true,
+    warranty: {
+      type: String,
+      default: "1 Year",
+    },
+    features: [
+      {
+        type: String,
+      
+      },
+    ],
+
+    status: {
+      type: String,
+      enum: ["active", "inactive"],
+      default: "active",
     },
   },
   {

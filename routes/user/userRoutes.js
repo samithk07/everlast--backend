@@ -1,9 +1,26 @@
-const express = require("express");
-const router = express.Router();
+const express=require("express");
+const route=express.Router();
+const validatorMiddleware=require("../../middleware/validatorMiddlewar");
+const loginValidate=require("../../validator/loginValidator");
+const registervalidate=require("../../validator/registerValidator");
+const {register,login,getProfile,logout}=require("../../controllers/user/authController");
+const protect=require("../../middleware/authMiddleware")
+const generateToken=require("../../utils/generateToken");
 
-const protect = require("../../Middleware/authMiddleware");
-const { getProfile } = require("../../Controllers/user/userController");
+const { authLimiter}=require("../../middleware/rateLimiter")
 
-router.get("/profile", protect, getProfile);
 
-module.exports = router;
+
+
+route.post("/register",authLimiter,validatorMiddleware(registervalidate),register);
+
+
+route.post("/login",authLimiter,validatorMiddleware(loginValidate),login);
+route.post("/logout",protect,logout);
+route.post("/refresh",generateToken);
+route.get("/getUser",protect);
+
+
+
+
+module.exports=route;
