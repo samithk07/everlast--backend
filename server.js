@@ -47,16 +47,7 @@ app.use("/api/admin/product",adminProductRoute)
 // ==============================
 // Test Route
 // ==============================
-app.use((err, req, res, next) => {
-  console.error("===== GLOBAL ERROR =====");
-  console.error(err);
 
-  res.status(500).json({
-    success: false,
-    message: err.message,
-    error: err,
-  });
-});
 app.get("/", (req, res) => {
   res.json({
     success: true,

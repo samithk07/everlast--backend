@@ -6,6 +6,7 @@ const sendResponse = require("../../Utils/sendResponse");
 // ================= CREATE ORDER =================
 
 const createOrder = async (req, res) => {
+  
   try {
     const userId = req.user._id;
 
@@ -20,11 +21,13 @@ const createOrder = async (req, res) => {
     } = req.body;
 
     const cart = await Cart.findOne({ user: userId }).populate("items.product");
+    console.log("Cart:", cart);
+
 
     if (!cart || cart.items.length === 0) {
       return sendResponse(res, 400, false, "Cart is empty");
     }
-
+console.log("Items:", cart.items);
     let totalAmount = 0;
 
     const orderItems = cart.items.map((item) => {
@@ -70,9 +73,14 @@ const createOrder = async (req, res) => {
       201,
       true,
       "Order placed successfully",
-      order
+      {
+        orderId: order._id,
+        totalAmount: order.totalAmount
+    }
+      
     );
   } catch (error) {
+    
     return sendResponse(res, 500, false, error.message);
   }
 };

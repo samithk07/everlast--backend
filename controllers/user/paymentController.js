@@ -1,75 +1,131 @@
-const Payment = require("../../Models/Payment");
+const crypto = require("crypto");
+const razorpay = require("../../config/razorpay");
 const Order = require("../../Models/Order");
+const Payment = require("../../Models/Payment");
 const sendResponse = require("../../Utils/sendResponse");
 
-// ================= CREATE PAYMENT =================
+
+// =======================
+// Create Razorpay Order
+// =======================
 
 const createPayment = async (req, res) => {
-  try {
-    const { orderId } = req.body;
 
-    const order = await Order.findOne({
-      _id: orderId,
-      user: req.user._id,
-    });
+    try{
 
-    if (!order) {
-      return sendResponse(res, 404, false, "Order not found");
+        const {orderId}=req.body;
+
+        const order=await Order.findById(orderId);
+
+        if(!order){
+
+            return sendResponse(res,404,false,"Order not found");
+        }
+
+        const options={
+            amount:order.totalAmount*100,
+            currency:"INR",
+            receipt:order._id.toString(),
+        };
+
+        const razorpayOrder=await razorpay.orders.create(options);
+
+        await Payment.create({
+
+            user:req.user._id,
+            order:order._id,
+            amount:order.totalAmount,
+            paymentMethod:"ONLINE",
+            transactionId:razorpayOrder.id,
+            status:"Pending"
+
+        });
+
+        return sendResponse(res,200,true,"Razorpay order created",{
+
+            key:process.env.RAZORPAY_KEY_ID,
+            razorpayOrder
+
+        });
+
     }
 
-    const payment = await Payment.create({
-      user: req.user._id,
-      order: order._id,
-      amount: order.totalAmount,
-      paymentMethod: order.paymentMethod,
-      transactionId: "TXN" + Date.now(),
-      status: "Pending",
-    });
+    catch(error){
 
-    return sendResponse(
-      res,
-      201,
-      true,
-      "Payment created successfully",
-      payment
-    );
-  } catch (error) {
-    return sendResponse(res, 500, false, error.message);
-  }
-};
+        return sendResponse(res,500,false,error.message);
 
-// ================= VERIFY PAYMENT =================
-
-const verifyPayment = async (req, res) => {
-  try {
-    const { paymentId } = req.body;
-
-    const payment = await Payment.findById(paymentId);
-
-    if (!payment) {
-      return sendResponse(res, 404, false, "Payment not found");
     }
 
-    payment.status = "Success";
-    await payment.save();
-
-    await Order.findByIdAndUpdate(payment.order, {
-      paymentStatus: "Paid",
-      orderStatus: "Processing",
-    });
-
-    return sendResponse(
-      res,
-      200,
-      true,
-      "Payment verified successfully"
-    );
-  } catch (error) {
-    return sendResponse(res, 500, false, error.message);
-  }
 };
 
-module.exports = {
-  createPayment,
-  verifyPayment,
+
+// =======================
+// Verify Payment
+// =======================
+
+const verifyPayment=async(req,res)=>{
+
+    try{
+
+        const{
+
+            razorpay_order_id,
+            razorpay_payment_id,
+            razorpay_signature
+
+        }=req.body;
+
+        const body=razorpay_order_id+"|"+razorpay_payment_id;
+
+        const expectedSignature=crypto
+        .createHmac("sha256",process.env.RAZORPAY_KEY_SECRET)
+        .update(body.toString())
+        .digest("hex");
+
+        if(expectedSignature!==razorpay_signature){
+
+            return sendResponse(res,400,false,"Payment verification failed");
+
+        }
+
+        const payment=await Payment.findOne({
+
+            transactionId:razorpay_order_id
+
+        });
+
+        if(!payment){
+
+            return sendResponse(res,404,false,"Payment not found");
+
+        }
+
+        payment.status="Success";
+
+        await payment.save();
+
+        await Order.findByIdAndUpdate(payment.order,{
+
+            paymentStatus:"Paid",
+            orderStatus:"Processing"
+
+        });
+
+        return sendResponse(res,200,true,"Payment successful");
+
+    }
+
+    catch(error){
+
+        return sendResponse(res,500,false,error.message);
+
+    }
+
+};
+
+module.exports={
+
+    createPayment,
+    verifyPayment
+
 };

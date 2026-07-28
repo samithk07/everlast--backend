@@ -5,7 +5,7 @@ const sendResponse = require("../../Utils/sendResponse");
 const createServiceRequest = async (req, res) => {
   try {
     const userId = req.user._id;
-
+    
     const {
       fullName,
       phone,
@@ -15,7 +15,7 @@ const createServiceRequest = async (req, res) => {
       preferredDate,
       description,
     } = req.body;
-
+    
     if (
       !fullName ||
       !phone ||
@@ -30,6 +30,7 @@ const createServiceRequest = async (req, res) => {
         "All required fields must be filled"
       );
     }
+ 
 
     const service = await Service.create({
       user: userId,

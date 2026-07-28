@@ -10,34 +10,16 @@ const getAllProducts = async (req, res) => {
     res.status(200).json({
       success: true,
       count: products.length,
-      data: products,
+      products,
     });
   } catch (error) {
     res.status(500).json({
       success: false,
       message: error.message,
-    });
+    }); 
   }
 };
 
-// ================= Create Product =================
-
-const createProduct = async (req, res) => {
-  try {
-    const product = await Product.create(req.body);
-
-    res.status(201).json({
-      success: true,
-      message: "Product created successfully",
-      data: product,
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
-  }
-};
 
 // ================= Get Product By ID =================
 
@@ -137,7 +119,7 @@ const searchProducts = async (req, res) => {
 
 
 module.exports = {
-  createProduct,
+  
   getAllProducts,
   getProductById,
   getProductsByCategory,

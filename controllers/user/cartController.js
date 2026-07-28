@@ -8,7 +8,8 @@ const addToCart = async (req, res) => {
 
   try {
     const userId = req.user._id;
-    const { productId, quantity = 1 } = req.body;
+    const {productId}=req.params;
+    const quantity = 1;
 
     if (!productId) {
       return sendResponse(res, 400, false, "Product ID is required");

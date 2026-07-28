@@ -18,7 +18,7 @@ route.post("/register",authLimiter,validatorMiddleware(registervalidate),registe
 route.post("/login",authLimiter,validatorMiddleware(loginValidate),login);
 route.post("/logout",protect,logout);
 route.post("/refresh",generateToken);
-route.get("/getUser",protect);
+route.get("/getProfile",getProfile);
 
 
 

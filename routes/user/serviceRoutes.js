@@ -1,26 +1,28 @@
 const express = require("express");
-
 const router = express.Router();
-
-const protect = require("../../Middleware/authMiddleware");
+const validatorMiddleware=require("../../middleware/validatorMiddlewar");
+const serviceValidator=require("../../validator/serviceValidator")
+const protect = require("../../middleware/authMiddleware");
 
 const {
   createServiceRequest,
   getMyServices,
   getSingleService,
   cancelService,
-} = require("../../Controllers/user/serviceController");
+} = require("../../controllers/user/serviceController");
 
-// Create Service Request
-router.post("/", protect, createServiceRequest);
+router.post(
+  "/",
+  protect,
+  validatorMiddleware(serviceValidator),
+  createServiceRequest
+  
+);
 
-// Get All Service Requests of Logged-in User
 router.get("/", protect, getMyServices);
 
-// Get Single Service Request
 router.get("/:id", protect, getSingleService);
 
-// Cancel Service Request
-router.put("/:id/cancel", protect, cancelService);
+router.patch("/:id/cancel", protect, cancelService);
 
 module.exports = router;

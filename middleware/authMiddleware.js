@@ -2,10 +2,12 @@ const jwt = require("jsonwebtoken");
 const userModel = require("../Models/User");
 
 const protect = async (req, res, next) => {
+    console.log("Cookies:", req.cookies);
+
   try {
     // Get Access Token from cookies
     const token = req.cookies.AccessToken;
-  // console.log("AccessToken:", token);
+  console.log("AccessToken:", token);
     if (!token) {
       return res.status(401).json({
         success: false,

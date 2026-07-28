@@ -11,8 +11,8 @@ const {
   clearCart,
 } = require("../../controllers/user/cartController");
 
-router.post("/", protect, addToCart);
 router.get("/", protect, getCart);
+router.post("/:productId", protect, addToCart);
 router.put("/:productId", protect, updateCartQuantity);
 router.delete("/:productId", protect, removeCartItem);
 router.delete("/", protect, clearCart);

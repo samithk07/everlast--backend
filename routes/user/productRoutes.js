@@ -12,8 +12,7 @@ const {
 
 router
   .route("/")
-  .get(getAllProducts)
-  .post(createProduct);
+  .get(getAllProducts);
 
 // Specific routes FIRST
 router.get("/search", searchProducts);

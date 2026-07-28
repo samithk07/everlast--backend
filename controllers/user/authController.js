@@ -91,13 +91,17 @@ const login = async (req, res) => {
         httpOnly: true,
         secure: false,
         sameSite: "lax",
+        path: "/",
         maxAge: 15 * 60 * 1000,
+
       })
       .cookie("RefreshToken", RefreshToken, {
         httpOnly: true,
         secure: false,
         sameSite: "lax",
+        path: "/",
         maxAge: 7 * 24 * 60 * 60 * 1000,
+
       });
 
     return sendResponse(res, 200, true, "Login successful", {
@@ -114,6 +118,8 @@ const login = async (req, res) => {
 
 const getProfile = async (req, res) => {
   try {
+    console.log("REQ USER:", req.user);
+
     return sendResponse(
       res,
       200,
@@ -135,26 +141,25 @@ const getProfile = async (req, res) => {
 
 const logout = async (req, res) => {
   try {
-    res
-      .clearCookie("Access_Token", {
-        sameSite: "lax",
-        httpOnly: true,
-        secure: true,
-        sameSite: "none",
-      })
-      .clearCookie("Refresh_Token", {
-        sameSite: "lax",
-        httpOnly: true,
-        secure: true,
-        sameSite: "none",
-      })
-      .status(200)
-      .json({ Message: "Logout successful" });
-  } catch (e) {
-    res.status(500).json({ Message: "Logout error" });
+    res.clearCookie("AccessToken", {
+      httpOnly: true,
+      secure: false,
+      sameSite: "lax",
+      path: "/",
+    });
+
+    res.clearCookie("RefreshToken", {
+      httpOnly: true,
+      secure: false,
+      sameSite: "lax",
+      path: "/",
+    });
+
+    return sendResponse(res, 200, true, "Logout successful");
+  } catch (error) {
+    return sendResponse(res, 500, false, error.message);
   }
 };
-
 module.exports = {
   register,
   login,
