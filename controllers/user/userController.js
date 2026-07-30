@@ -1,19 +1,53 @@
+const User = require("../../Models/User");
 const sendResponse = require("../../Utils/sendResponse");
 
-const getProfile = async (req, res) => {
+const updateFcmToken = async (req, res) => {
   try {
-    sendResponse(
+    
+
+    const { fcmToken } = req.body;
+
+    if (!fcmToken) {
+      return sendResponse(
+        res,
+        400,
+        false,
+        "FCM token is required"
+      );
+    }
+
+    const user = await User.findByIdAndUpdate(
+      req.user._id,
+      {
+        fcmToken,
+      },
+      {
+        new: true,
+      }
+    );
+
+   
+
+    return sendResponse(
       res,
       200,
       true,
-      "Profile fetched successfully",
-      req.user
+      "FCM token updated successfully",
+      user
     );
+
   } catch (error) {
-    sendResponse(res, 500, false, error.message);
+    console.error("FCM ERROR:", error);
+
+    return sendResponse(
+      res,
+      500,
+      false,
+      error.message
+    );
   }
 };
 
 module.exports = {
-  getProfile,
+  updateFcmToken,
 };

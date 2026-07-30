@@ -58,7 +58,7 @@ const serviceSchema = new mongoose.Schema(
       enum: [
         "Pending",
         "Assigned",
-        "In Progress",
+        "On The Way",
         "Completed",
         "Cancelled",
       ],

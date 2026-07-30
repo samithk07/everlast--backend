@@ -8,6 +8,7 @@ const protect=require("../../middleware/authMiddleware")
 const generateToken=require("../../utils/generateToken");
 
 const { authLimiter}=require("../../middleware/rateLimiter")
+const {updateFcmToken,} = require("../../controllers/user/userController");
 
 
 
@@ -19,6 +20,7 @@ route.post("/login",authLimiter,validatorMiddleware(loginValidate),login);
 route.post("/logout",protect,logout);
 route.post("/refresh",generateToken);
 route.get("/getProfile",getProfile);
+route.put("/fcm-token",protect,updateFcmToken);
 
 
 
