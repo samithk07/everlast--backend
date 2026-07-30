@@ -1,4 +1,4 @@
-const User = require("../../Models/User");
+const User = require("../../models/User");
 const sendResponse = require("../../Utils/sendResponse");
 
 const updateFcmToken = async (req, res) => {

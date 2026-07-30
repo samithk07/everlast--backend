@@ -1,6 +1,6 @@
-const User = require("../../Models/User");
-const Product = require("../../Models/Product");
-const Order = require("../../Models/Order");
+const User = require("../../models/User");
+const Product = require("../../models/Product");
+const Order = require("../../models/Order");
 const sendResponse = require("../../Utils/sendResponse");
 
 const getDashboard = async (req, res) => {

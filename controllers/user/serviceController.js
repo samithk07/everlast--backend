@@ -1,4 +1,4 @@
-const Service = require("../../Models/Service");
+const Service = require("../../models/Service");
 const sendResponse = require("../../Utils/sendResponse");
 
 // Create Service Request

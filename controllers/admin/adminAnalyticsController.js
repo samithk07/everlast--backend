@@ -1,6 +1,6 @@
-const Order = require("../../Models/Order");
-const Product = require("../../Models/Product");
-const User = require("../../Models/User");
+const Order = require("../../models/Order");
+const Product = require("../../models/Product");
+const User = require("../../models/User");
 const sendResponse = require("../../Utils/sendResponse");
 
 const getAnalytics = async (req, res) => {

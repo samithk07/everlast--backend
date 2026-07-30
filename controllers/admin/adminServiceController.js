@@ -1,7 +1,7 @@
-const User = require("../../Models/User");
+const User = require("../../models/User");
 const { sendPushNotification } = require("../../services/pushNotificationService");
 
-const Service = require("../../Models/Service");
+const Service = require("../../models/Service");
 const sendResponse = require("../../Utils/sendResponse");
 
 const getAllServices = async (req, res) => {

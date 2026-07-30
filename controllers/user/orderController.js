@@ -1,6 +1,6 @@
-const Cart = require("../../Models/Cart");
-const Order = require("../../Models/Order");
-const Product = require("../../Models/Product");
+const Cart = require("../../models/Cart");
+const Order = require("../../models/Order");
+const Product = require("../../models/Product");
 const sendResponse = require("../../Utils/sendResponse");
 
 // ================= CREATE ORDER =================
