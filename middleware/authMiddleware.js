@@ -31,6 +31,13 @@ const protect = async (req, res, next) => {
       });
     }
 
+    if (user.isBlocked) {
+  return res.status(403).json({
+    success: false,
+    message: "Your account has been blocked by the administrator.",
+  });
+}
+
     req.user = user;
 
     next();

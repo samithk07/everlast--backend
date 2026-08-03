@@ -11,10 +11,11 @@ const {
   getProfile,
   logout
 } = require("../../controllers/user/authController");
-
 const protect = require("../../middleware/authMiddleware");
-const loginValidate = require("../../validator/loginValidator");
 
+const loginValidate = require("../../validator/loginValidator");
+console.log("protect:", protect);
+console.log("getProfile:", getProfile);
 router.post("/register",authLimiter,validatorMiddleware(registerValidator), register);
 router.post("/login",validatorMiddleware(loginValidate), login);
 router.get("/getProfile", protect, getProfile);

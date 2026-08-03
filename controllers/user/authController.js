@@ -74,6 +74,15 @@ const login = async (req, res) => {
       return sendResponse(res, 404, false, "User not found");
     }
 
+    if (user.isBlocked) {
+      return sendResponse(
+        res,
+        403,
+        false,
+        "Your account has been blocked. Please contact the administrator."
+      );
+    }
+
     const isMatch = await bcrypt.compare(password, user.password);
 
     if (!isMatch) {
