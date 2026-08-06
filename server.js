@@ -41,7 +41,7 @@ app.use(cookieParser());
 // CORS Configuration
 const allowedOrigins = new Set([
   "http://localhost:5173",
-  "https://everlastwatersolutions.vercel.app",
+  "https://everlastwatersolustions.vercel.app",
 ]);
 
 app.use(
