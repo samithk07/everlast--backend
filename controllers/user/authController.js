@@ -35,18 +35,20 @@ const register = async (req, res) => {
     );
 
     res
-      .cookie("AccessToken", AccessToken, {
-        httpOnly: true,
-        secure: false,
-        sameSite: "lax",
-        maxAge: 15 * 60 * 1000,
-      })
-      .cookie("RefreshToken", RefreshToken, {
-        httpOnly: true,
-        secure: false,
-        sameSite: "lax",
-        maxAge: 7 * 24 * 60 * 60 * 1000,
-      });
+  .cookie("AccessToken", AccessToken, {
+    httpOnly: true,
+    secure: true,
+    sameSite: "none",
+    path: "/",
+    maxAge: 15 * 60 * 1000,
+  })
+  .cookie("RefreshToken", RefreshToken, {
+    httpOnly: true,
+    secure: true,
+    sameSite: "none",
+    path: "/",
+    maxAge: 7 * 24 * 60 * 60 * 1000,
+  });
 
     return sendResponse(res, 201, true, "User registered successfully", {
       id: user._id,
@@ -96,22 +98,20 @@ const login = async (req, res) => {
     );
 
     res
-      .cookie("AccessToken", AccessToken, {
-        httpOnly: true,
-        secure: false,
-        sameSite: "lax",
-        path: "/",
-        maxAge: 15 * 60 * 1000,
-
-      })
-      .cookie("RefreshToken", RefreshToken, {
-        httpOnly: true,
-        secure: false,
-        sameSite: "lax",
-        path: "/",
-        maxAge: 7 * 24 * 60 * 60 * 1000,
-
-      });
+  .cookie("AccessToken", AccessToken, {
+    httpOnly: true,
+    secure: true,
+    sameSite: "none",
+    path: "/",
+    maxAge: 15 * 60 * 1000,
+  })
+  .cookie("RefreshToken", RefreshToken, {
+    httpOnly: true,
+    secure: true,
+    sameSite: "none",
+    path: "/",
+    maxAge: 7 * 24 * 60 * 60 * 1000,
+  });
 
     return sendResponse(res, 200, true, "Login successful", {
       id: user._id,
@@ -153,15 +153,15 @@ const logout = async (req, res) => {
   try {
     res.clearCookie("AccessToken", {
       httpOnly: true,
-      secure: false,
-      sameSite: "lax",
+      secure: true,
+      sameSite: "none",
       path: "/",
     });
 
     res.clearCookie("RefreshToken", {
       httpOnly: true,
-      secure: false,
-      sameSite: "lax",
+      secure: true,
+      sameSite: "none",
       path: "/",
     });
 
