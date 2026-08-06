@@ -63,6 +63,9 @@ const register = async (req, res) => {
 // ================= LOGIN =================
 
 const login = async (req, res) => {
+  console.log("========== LOGIN API ==========");
+  console.log(req.body);
+
   try {
     const { email, password } = req.body;
 
@@ -84,7 +87,8 @@ const login = async (req, res) => {
         "Your account has been blocked. Please contact the administrator."
       );
     }
-
+ console.log("User Found:", user.email);
+    console.log("Sending Cookies...");
     const isMatch = await bcrypt.compare(password, user.password);
 
     if (!isMatch) {
@@ -112,7 +116,7 @@ const login = async (req, res) => {
     path: "/",
     maxAge: 7 * 24 * 60 * 60 * 1000,
   });
-
+ console.log("Cookies Sent");
     return sendResponse(res, 200, true, "Login successful", {
       id: user._id,
       name: user.name,
