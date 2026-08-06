@@ -39,22 +39,27 @@ app.use(express.json());
 app.use(cookieParser());
 
 // CORS Configuration
-const allowedOrigins = [
+const allowedOrigins = new Set([
   "http://localhost:5173",
   "https://everlastwatersolutions.vercel.app",
-];
+]);
 
 app.use(
   cors({
-    origin: function (origin, callback) {
-      console.log("Origin:", origin);
+    origin(origin, callback) {
+      console.log("Origin received:", JSON.stringify(origin));
 
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        console.log("Blocked Origin:", origin);
-        callback(new Error("Not allowed by CORS"));
+      if (!origin) {
+        return callback(null, true);
       }
+
+      if (allowedOrigins.has(origin.trim())) {
+        console.log("Allowed");
+        return callback(null, true);
+      }
+
+      console.log("Blocked:", JSON.stringify(origin));
+      return callback(new Error("Not allowed by CORS"));
     },
     credentials: true,
   })
