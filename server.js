@@ -44,16 +44,21 @@ const allowedOrigins = [
   "https://everlastwatersolutions.vercel.app",
 ];
 
-const corsOptions = {
-  origin: allowedOrigins,
-  credentials: true,
-  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"],
-};
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      console.log("Origin:", origin);
 
-app.use(cors(corsOptions));
-app.options("*", cors(corsOptions));
-
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        console.log("Blocked Origin:", origin);
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    credentials: true,
+  })
+);
 // =============API Routes=================
 
 app.use("/api/products", productRoutes);
