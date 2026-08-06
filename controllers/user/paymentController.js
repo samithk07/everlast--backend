@@ -2,7 +2,7 @@ const crypto = require("crypto");
 const razorpay = require("../../config/razorpay");
 const Order = require("../../models/Order");
 const Payment = require("../../models/Payment");
-const sendResponse = require("../../Utils/sendResponse");
+const sendResponse = require("../../utils/sendResponse");
 
 
 // =======================

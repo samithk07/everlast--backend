@@ -1,5 +1,5 @@
 const User = require("../../models/User");
-const sendResponse = require("../../Utils/sendResponse");
+const sendResponse = require("../../utils/sendResponse");
 
 const getAllUsers = async (req, res) => {
   try {

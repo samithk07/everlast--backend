@@ -1,5 +1,5 @@
 const Service = require("../../models/Service");
-const sendResponse = require("../../Utils/sendResponse");
+const sendResponse = require("../../utils/sendResponse");
 
 // Create Service Request
 const createServiceRequest = async (req, res) => {

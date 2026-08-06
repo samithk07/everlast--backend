@@ -76,7 +76,7 @@ const addProduct = async (req, res) => {
 };
 
 const Product = require("../../models/Product");
-const sendResponse = require("../../Utils/sendResponse");
+const sendResponse = require("../../utils/sendResponse");
 
 const getAllProducts = async (req, res) => {
   try {

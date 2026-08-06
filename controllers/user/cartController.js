@@ -1,6 +1,6 @@
 const Cart = require("../../models/Cart");
 const Product = require("../../models/Product");
-const sendResponse = require("../../Utils/sendResponse");
+const sendResponse = require("../../utils/sendResponse");
 
 // ================= ADD TO CART =================
 

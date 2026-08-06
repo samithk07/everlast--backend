@@ -1,5 +1,5 @@
 const Order = require("../../models/Order");
-const sendResponse = require("../../Utils/sendResponse");
+const sendResponse = require("../../utils/sendResponse");
 const User = require("../../models/User");
 const { sendPushNotification } = require("../../services/pushNotificationService");
 const getAllOrders = async (req, res) => {

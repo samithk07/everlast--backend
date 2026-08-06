@@ -1,7 +1,7 @@
 const bcrypt = require("bcryptjs");
 const userModel = require("../../models/User");
-const generateToken = require("../../Utils/generateToken");
-const sendResponse = require("../../Utils/sendResponse");
+const generateToken = require("../../utils/generateToken");
+const sendResponse = require("../../utils/sendResponse");
 
 // ================= REGISTER =================
 
